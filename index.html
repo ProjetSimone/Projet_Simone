@@ -1,0 +1,770 @@
+<!DOCTYPE html>
+<html lang="fr" class="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simone sur Instagram ?</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --background: linear-gradient(135deg, #e6f2ff, #ffffff);
+            --text: #262626;
+            --border: #484848;
+            --placeholder: #efefef;
+            --phone-bg: #ffffff;
+            --accent: #0095f6;
+        }
+
+        .dark {
+            --background: linear-gradient(135deg, #111111, #262626);
+            --text: #ffffff;
+            --border: #262626;
+            --placeholder: #262626;
+            --phone-bg: #121212;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            transition: all 0.3s ease;
+        }
+
+        html, body {
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+            background: var(--background);
+            color: var(--text);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .theme-switch {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text);
+            background: var(--phone-bg);
+            padding: 12px;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .info-button {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            cursor: pointer;
+            z-index: 100;
+            color: var(--text);
+            background: var(--phone-bg);
+            padding: 12px;
+            border-radius: 50%;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--phone-bg);
+            padding: 40px 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            z-index: 200;
+            max-width: 90%;
+            width: 400px;
+            opacity: 1;
+            visibility: visible;
+            transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .popup.hidden {
+            opacity: 0;
+            visibility: hidden;
+            transform: translate(-50%, -50%) scale(0.8);
+        }
+
+        /* Animation pour les nouveaux popups */
+        @keyframes popupAppear {
+            0% {
+                opacity: 0;
+                transform: translate(-50%, -50%) scale(0.8);
+            }
+            50% {
+                transform: translate(-50%, -50%) scale(1.05);
+            }
+            100% {
+                opacity: 1;
+                transform: translate(-50%, -50%) scale(1);
+            }
+        }
+
+        .action-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: var(--phone-bg);
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            text-align: center;
+            z-index: 200;
+            max-width: 90%;
+            width: 350px;
+            display: none;
+            animation: popupAppear 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .action-popup.show {
+            display: block;
+        }
+
+        .popup h1 {
+            margin-bottom: 20px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+
+        .popup p {
+            margin-bottom: 30px;
+            font-size: 16px;
+            line-height: 1.6;
+            color: var(--text);
+            opacity: 0.9;
+        }
+
+        .popup button, .action-popup button {
+            padding: 14px 36px;
+            font-size: 16px;
+            font-weight: 600;
+            background-color: #262626;
+            color: #fff;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
+        }
+
+        .popup button:hover, .action-popup button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.4);
+        }
+
+        .action-popup p {
+            margin-bottom: 20px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: var(--text);
+        }
+
+        .phone-container {
+            width: 100%;
+            max-width: 390px;
+            height: 90vh;
+            max-height: 844px;
+            background: var(--phone-bg);
+            position: relative;
+            margin: 0 auto;
+            overflow: hidden;
+            border-radius: 48px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            display: none;
+            border: 12px solid var(--border);
+            opacity: 0;
+            transform: translateY(20px);
+        }
+
+        .phone-container.visible {
+            display: block;
+            animation: phoneAppear 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        @keyframes phoneAppear {
+            0% {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            100% {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes likeAnimation {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        .heart-animation {
+            animation: likeAnimation 0.3s ease-in-out;
+        }
+
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 150;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .dynamic-island {
+            position: absolute;
+            top: 12px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 126px;
+            height: 37px;
+            background: #000;
+            border-radius: 20px;
+            z-index: 10;
+        }
+
+        .camera {
+            display: none;
+        }
+
+        .feed-container {
+            height: 100%;
+            overflow-y: scroll;
+            padding-top: 60px;
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        .feed-container::-webkit-scrollbar {
+            display: none;
+        }
+
+        .post {
+            border-bottom: 1px solid var(--border);
+            margin-bottom: 12px;
+        }
+
+        .post-header {
+            display: flex;
+            align-items: center;
+            padding: 14px 16px;
+            justify-content: space-between;
+        }
+
+        .post-header-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .profile-pic {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 3px solid #e1306c;
+            padding: 2px;
+            background: var(--phone-bg);
+        }
+
+        .username {
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .location-text {
+            font-size: 12px;
+            color: var(--text);
+            opacity: 0.7;
+        }
+
+        .post-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+        }
+
+        .post-actions {
+            padding: 12px 16px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .post-actions-left {
+            display: flex;
+            gap: 18px;
+        }
+
+        .post-actions i {
+            font-size: 26px;
+            color: var(--text);
+            cursor: pointer;
+            transition: transform 0.2s ease;
+        }
+
+        .post-actions i:hover {
+            transform: scale(1.1);
+        }
+
+        .liked {
+            color: #ed4956 !important;
+        }
+
+        .post-likes {
+            padding: 0 16px 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .post-caption {
+            padding: 0 16px 12px;
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .hashtags {
+            color: var(--accent);
+            display: block;
+            margin-top: 8px;
+            font-size: 13px;
+        }
+
+        .post-time {
+            padding: 0 16px 16px;
+            color: var(--text);
+            opacity: 0.5;
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .more-options {
+            font-size: 24px;
+            color: var(--text);
+            padding: 8px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 480px) {
+            body {
+                padding: 0;
+            }
+
+            .phone-container {
+                border-radius: 0;
+                max-width: 100%;
+                height: 100vh;
+                max-height: 100vh;
+                margin: 0;
+                border: none;
+            }
+
+            .dynamic-island, .camera {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <i class="fas fa-moon theme-switch"></i>
+    <i class="fas fa-question-circle info-button"></i>
+
+    <div class="overlay" id="overlay"></div>
+
+    <div class="popup" id="welcome-popup">
+        <h1>Bienvenue</h1>
+        <p>Imaginez si Simone Veil avait utilisé Instagram pour partager ses pensées et son engagement. Découvrez une réplique simplifiée de ce qu'auraient pu être ses publications !</p>
+        <button onclick="closePopup()">Découvrir</button>
+    </div>
+
+    <div class="popup hidden" id="info-popup">
+        <h1>Pourquoi cet engagement ?</h1>
+        <p>La loi sur l'interruption volontaire de grossesse (IVG) représente l'un des engagements les plus marquants de Simone Veil. En tant que ministre de la Santé, elle a porté ce projet crucial pour les droits des femmes malgré une opposition virulente. Son discours historique du 26 novembre 1974 à l'Assemblée nationale témoigne de sa détermination et de son courage politique face aux conservateurs. Cette loi, qui porte son nom, a transformé la société française et reste un symbole du combat pour l'émancipation des femmes.</p>
+        <button onclick="closeInfoPopup()">Fermer</button>
+    </div>
+
+    <div class="action-popup" id="share-popup">
+        <p>Malheureusement, ce n'est pas instagram, vous pouvez tout de même partager ce site à l'aide du lien qui vient d'être copié :)</p>
+        <button onclick="closeActionPopup('share-popup')">OK</button>
+    </div>
+
+    <div class="action-popup" id="comment-popup">
+        <p>Malheureusement, il est impossible de commenter sur cette réplique d'instagram :/</p>
+        <button onclick="closeActionPopup('comment-popup')">OK</button>
+    </div>
+
+    <div class="phone-container" id="phone-container">
+        <div class="dynamic-island"></div>
+        <div class="camera"></div>
+        <div class="feed-container">
+            <div class="feed">
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-header-left">
+                            <img class="profile-pic" src="images/profile.jpg" alt="Simone Veil">
+                            <div>
+                                <span class="username">simone_veil</span>
+                                <div class="location-text">Assemblée nationale, Paris</div>
+                            </div>
+                        </div>
+                        <div class="more-options">⋯</div>
+                    </div>
+
+                    <img class="post-image" src="images/post1.jpg" alt="Simone Veil à l'Assemblée nationale">
+
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <i class="far fa-heart" id="likeButton"></i>
+                            <i class="far fa-comment" id="commentButton"></i>
+                            <i class="far fa-paper-plane" id="shareButton"></i>
+                        </div>
+                        <i class="far fa-bookmark"></i>
+                    </div>
+
+                    <div class="post-likes" id="likesCount">Aimé par valery_giscard et 6 759 personnes</div>
+                    <div class="post-caption">
+                        <span class="username">simone_veil</span> 
+                        Aujourd'hui, j'ai l'honneur d'être nommée ministre de la Santé dans le gouvernement de Jacques Chirac, sous la présidence de Valéry Giscard d'Estaing. Consciente des défis à venir, je suis déterminée à améliorer le système de santé français et à défendre les droits des femmes.
+                        <span class="hashtags">#NouveauDépart #MinistreDeLaSanté #Engagement #DroitsDesFemmes</span>
+                    </div>
+                    <div class="post-time">28 mai 1974</div>
+                </article>
+
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-header-left">
+                            <img class="profile-pic" src="images/profile.jpg" alt="Simone Veil">
+                            <div>
+                                <span class="username">simone_veil</span>
+                                <div class="location-text">Assemblée nationale, Paris</div>
+                            </div>
+                        </div>
+                        <div class="more-options">⋯</div>
+                    </div>
+
+                    <img class="post-image" src="images/post2.jpg" alt="Simone Veil à l'Assemblée nationale">
+
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <i class="far fa-heart" id="likeButton"></i>
+                            <i class="far fa-comment" id="commentButton"></i>
+                            <i class="far fa-paper-plane" id="shareButton"></i>
+                        </div>
+                        <i class="far fa-bookmark"></i>
+                    </div>
+
+                    <div class="post-likes" id="likesCount">Aimé par jean_veil et 15 678 personnes</div>
+                    <div class="post-caption">
+                        <span class="username">simone_veil</span> 
+                        Ce jour, j'ai présenté devant l'Assemblée nationale le projet de loi visant à dépénaliser l'interruption volontaire de grossesse. Consciente des débats passionnés que ce sujet suscite, je suis convaincue de la nécessité de cette réforme pour mettre fin aux drames des avortements clandestins.
+                        <span class="hashtags">#LoiIVG #DroitsDesFemmes #SantéPublique</span>
+                    </div>
+                    <div class="post-time">26 novembre 1974</div>
+                </article>
+
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-header-left">
+                            <img class="profile-pic" src="images/profile.jpg" alt="Simone Veil">
+                            <div>
+                                <span class="username">simone_veil</span>
+                                <div class="location-text">Assemblée nationale, Paris</div>
+                            </div>
+                        </div>
+                        <div class="more-options">⋯</div>
+                    </div>
+
+                    <img class="post-image" src="images/post3.jpg" alt="Simone Veil à l'Assemblée nationale">
+
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <i class="far fa-heart" id="likeButton"></i>
+                            <i class="far fa-comment" id="commentButton"></i>
+                            <i class="far fa-paper-plane" id="shareButton"></i>
+                        </div>
+                        <i class="far fa-bookmark"></i>
+                    </div>
+
+                    <div class="post-likes" id="likesCount">Aimé par gisele_halimi et 12 091 personnes</div>
+                    <div class="post-caption">
+                        <span class="username">simone_veil</span> 
+                        En tant que magistrate et femme engagée, j'ai été témoin des drames vécus par de nombreuses femmes confrontées à des avortements clandestins. Il est temps d'agir pour mettre fin à ces souffrances et offrir un cadre légal et sécurisé à celles qui en ont besoin.
+                        <span class="hashtags">#DroitsDesFemmes #SantéPublique #IVG</span>
+                    </div>
+                    <div class="post-time">19 Juin 1974</div>
+                </article>
+
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-header-left">
+                            <img class="profile-pic" src="images/profile.jpg" alt="Simone Veil">
+                            <div>
+                                <span class="username">simone_veil</span>
+                                <div class="location-text">Assemblée nationale, Paris</div>
+                            </div>
+                        </div>
+                        <div class="more-options">⋯</div>
+                    </div>
+
+                    <img class="post-image" src="images/post4.jpg" alt="Simone Veil à l'Assemblée nationale">
+
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <i class="far fa-heart" id="likeButton"></i>
+                            <i class="far fa-comment" id="commentButton"></i>
+                            <i class="far fa-paper-plane" id="shareButton"></i>
+                        </div>
+                        <i class="far fa-bookmark"></i>
+                    </div>
+
+                    <div class="post-likes" id="likesCount">Aimé par marlene_schiappa et 9 782 personnes</div>
+                    <div class="post-caption">
+                        <span class="username">simone_veil</span> 
+                        Après de nombreuses consultations et réflexions, nous avons finalisé le projet de loi visant à dépénaliser l'interruption volontaire de grossesse. Chaque détail a été soigneusement pensé pour garantir la sécurité et le respect des femmes concernées
+                        <span class="hashtags">#LoiIVG #DroitsDesFemmes #SantéPourToutes</span>
+                    </div>
+                    <div class="post-time">23 Septembre 1974</div>
+                </article>
+
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-header-left">
+                            <img class="profile-pic" src="images/profile.jpg" alt="Simone Veil">
+                            <div>
+                                <span class="username">simone_veil</span>
+                                <div class="location-text">Assemblée nationale, Paris</div>
+                            </div>
+                        </div>
+                        <div class="more-options">⋯</div>
+                    </div>
+
+                    <img class="post-image" src="images/post5.jpg" alt="Simone Veil à l'Assemblée nationale">
+
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <i class="far fa-heart" id="likeButton"></i>
+                            <i class="far fa-comment" id="commentButton"></i>
+                            <i class="far fa-paper-plane" id="shareButton"></i>
+                        </div>
+                        <i class="far fa-bookmark"></i>
+                    </div>
+
+                    <div class="post-likes" id="likesCount">Aimé par elisabeth_badinter et 13 546 personnes</div>
+                    <div class="post-caption">
+                        <span class="username">simone_veil</span> 
+                        Les débats à l'Assemblée nationale sont honteux et les attaques personnelles ne cessent de fuser. Certains députés n'hésitent pas à comparer notre projet de loi à des actes barbares, utilisant des termes tels que 'génocide' ou 'abattoirs'. Ces propos sont d'une violence inouïe, mais je reste déterminée à mener ce combat pour les femmes
+                        <span class="hashtags">#Honte #Courage #DroitsDesFemmes</span>
+                    </div>
+                    <div class="post-time">28 novembre 1974</div>
+                </article>
+
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-header-left">
+                            <img class="profile-pic" src="images/profile.jpg" alt="Simone Veil">
+                            <div>
+                                <span class="username">simone_veil</span>
+                                <div class="location-text">Assemblée nationale, Paris</div>
+                            </div>
+                        </div>
+                        <div class="more-options">⋯</div>
+                    </div>
+
+                    <img class="post-image" src="images/post6.jpg" alt="Simone Veil à l'Assemblée nationale">
+
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <i class="far fa-heart" id="likeButton"></i>
+                            <i class="far fa-comment" id="commentButton"></i>
+                            <i class="far fa-paper-plane" id="shareButton"></i>
+                        </div>
+                        <i class="far fa-bookmark"></i>
+                    </div>
+
+                    <div class="post-likes" id="likesCount">Aimé par aintoine_veil et 11 691 personnes</div>
+                    <div class="post-caption">
+                        <span class="username">simone_veil</span> 
+                        Les discussions autour du projet de loi sur l'IVG sont vives et parfois difficiles. Malgré les oppositions, je reste déterminée à défendre ce texte essentiel pour les droits des femmes en France.
+                        <span class="hashtags">#Débats #LoiIVG #Engagement</span>
+                    </div>
+                    <div class="post-time">27 novembre 1974</div>
+                </article>
+
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-header-left">
+                            <img class="profile-pic" src="images/profile.jpg" alt="Simone Veil">
+                            <div>
+                                <span class="username">simone_veil</span>
+                                <div class="location-text">Assemblée nationale, Paris</div>
+                            </div>
+                        </div>
+                        <div class="more-options">⋯</div>
+                    </div>
+
+                    <img class="post-image" src="images/post7.jpg" alt="Simone Veil à l'Assemblée nationale">
+
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <i class="far fa-heart" id="likeButton"></i>
+                            <i class="far fa-comment" id="commentButton"></i>
+                            <i class="far fa-paper-plane" id="shareButton"></i>
+                        </div>
+                        <i class="far fa-bookmark"></i>
+                    </div>
+
+                    <div class="post-likes" id="likesCount">Aimé par francoise_giroud et 16 198 personnes</div>
+                    <div class="post-caption">
+                        <span class="username">simone_veil</span> 
+                        Après des semaines de débats intenses, l'Assemblée nationale a adopté la loi dépénalisant l'interruption volontaire de grossesse. C'est une avancée majeure pour les droits des femmes et la santé publique en France
+                        <span class="hashtags">#Victoire #DroitsDesFemmes #LoiIVG</span>
+                    </div>
+                    <div class="post-time">17 janvier 1975</div>
+                </article>
+
+
+                <article class="post">
+                    <div class="post-header">
+                        <div class="post-header-left">
+                            <img class="profile-pic" src="images/profile.jpg" alt="Simone Veil">
+                            <div>
+                                <span class="username">simone_veil</span>
+                                <div class="location-text">Assemblée nationale, Paris</div>
+                            </div>
+                        </div>
+                        <div class="more-options">⋯</div>
+                    </div>
+
+                    <img class="post-image" src="images/post8.jpg" alt="Simone Veil à l'Assemblée nationale">
+
+                    <div class="post-actions">
+                        <div class="post-actions-left">
+                            <i class="far fa-heart" id="likeButton"></i>
+                            <i class="far fa-comment" id="commentButton"></i>
+                            <i class="far fa-paper-plane" id="shareButton"></i>
+                        </div>
+                        <i class="far fa-bookmark"></i>
+                    </div>
+
+                    <div class="post-likes" id="likesCount">Aimé par cn_veil et 23 652 personnes</div>
+                    <div class="post-caption">
+                        <span class="username">simone_veil</span> 
+                        Depuis l'adoption de la loi sur l'IVG, de nombreux témoignages de femmes et de professionnels de santé nous parviennent. Ces retours confirment l'importance de cette avancée pour la société française.
+                        <span class="hashtags">#Témoignages #LoiIVG #ImpactPos</span>
+                    </div>
+                    <div class="post-time">18 mars 1975</div>
+                </article>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const themeSwitch = document.querySelector('.theme-switch');
+        const html = document.documentElement;
+        const overlay = document.getElementById('overlay');
+        const infoButton = document.querySelector('.info-button');
+        const infoPopup = document.getElementById('info-popup');
+        const likeButton = document.getElementById('likeButton');
+        const commentButton = document.getElementById('commentButton');
+        const shareButton = document.getElementById('shareButton');
+        const likesCount = document.getElementById('likesCount');
+        let isLiked = false;
+        let currentLikes = 6759;
+
+        themeSwitch?.addEventListener('click', () => {
+            html.classList.toggle('dark');
+            themeSwitch.classList.toggle('fa-moon');
+            themeSwitch.classList.toggle('fa-sun');
+        });
+
+        function closePopup() {
+            document.getElementById('welcome-popup').classList.add('hidden');
+            const phoneContainer = document.getElementById('phone-container');
+            phoneContainer.classList.add('visible');
+        }
+
+        function showActionPopup(popupId) {
+            const popup = document.getElementById(popupId);
+            overlay.classList.add('visible');
+            popup.classList.add('show');
+        }
+
+        function closeActionPopup(popupId) {
+            const popup = document.getElementById(popupId);
+            overlay.classList.remove('visible');
+            popup.classList.remove('show');
+        }
+
+        infoButton.addEventListener('click', () => {
+            overlay.classList.add('visible');
+            infoPopup.classList.remove('hidden');
+        });
+
+        function closeInfoPopup() {
+            overlay.classList.remove('visible');
+            infoPopup.classList.add('hidden');
+        }
+
+        overlay.addEventListener('click', () => {
+            closeInfoPopup();
+            closeActionPopup('share-popup');
+            closeActionPopup('comment-popup');
+        });
+
+        likeButton.addEventListener('click', () => {
+            likeButton.classList.add('heart-animation');
+            isLiked = !isLiked;
+            
+            if (isLiked) {
+                likeButton.classList.remove('far');
+                likeButton.classList.add('fas', 'liked');
+                currentLikes++;
+            } else {
+                likeButton.classList.remove('fas', 'liked');
+                likeButton.classList.add('far');
+                currentLikes--;
+            }
+            
+            likesCount.textContent = `${currentLikes.toLocaleString()} mentions J'aime`;
+            
+            setTimeout(() => {
+                likeButton.classList.remove('heart-animation');
+            }, 300);
+        });
+
+        commentButton.addEventListener('click', () => {
+            showActionPopup('comment-popup');
+        });
+
+        shareButton.addEventListener('click', async () => {
+            try {
+                await navigator.clipboard.writeText('https://kornion.github.io/instagram_clone/');
+                showActionPopup('share-popup');
+            } catch (err) {
+                console.error('Failed to copy: ', err);
+            }
+        });
+    </script>
+</body>
+</html>
