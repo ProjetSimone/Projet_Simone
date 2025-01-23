@@ -348,6 +348,7 @@ body {
     text-transform: uppercase;
     letter-spacing: 0.5px;
 }
+
 .more-options {
     font-size: 24px;
     color: var(--text);
@@ -372,4 +373,11 @@ body {
     .dynamic-island {
         display: none;
     }
+}
+
+body, * {
+    -webkit-user-select: none; /* Désactiver la sélection pour WebKit (Chrome, Safari, etc.) */
+    -moz-user-select: none;    /* Désactiver pour Firefox */
+    -ms-user-select: none;     /* Désactiver pour Internet Explorer/Edge */
+    user-select: none;         /* Désactiver pour les navigateurs modernes */
 }
