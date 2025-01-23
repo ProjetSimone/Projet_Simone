@@ -1,3 +1,10 @@
+document.addEventListener('contextmenu', (event) => event.preventDefault()); // Désactive le clic droit
+document.addEventListener('keydown', (event) => {
+    if (event.ctrlKey && (event.key === 'c' || event.key === 'x' || event.key === 'a')) {
+        event.preventDefault();
+    }
+});
+
 document.addEventListener('DOMContentLoaded', () => {
     const themeSwitch = document.querySelector('.theme-switch');
     const html = document.documentElement;
