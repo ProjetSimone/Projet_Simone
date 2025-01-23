@@ -31,6 +31,11 @@ document.addEventListener('DOMContentLoaded', () => {
         popup.classList.add('show');
     }
 
+    function togglePopupSize() {
+        const popup = document.getElementById('info-popup');
+        popup.classList.toggle('extended'); // Alterne le mode étendu
+    }    
+
     function closeActionPopup(popupId) {
         const popup = document.getElementById(popupId);
         overlay.classList.remove('visible');
@@ -45,6 +50,11 @@ document.addEventListener('DOMContentLoaded', () => {
     function closeInfoPopup() {
         overlay.classList.remove('visible');
         infoPopup.classList.add('hidden');
+        infoPopup.classList.remove('extended'); // Réinitialise l'extension si active
+    }
+
+    function togglePopupSize() {
+        infoPopup.classList.toggle('extended');
     }
 
     overlay.addEventListener('click', () => {
@@ -52,6 +62,10 @@ document.addEventListener('DOMContentLoaded', () => {
         closeActionPopup('share-popup');
         closeActionPopup('comment-popup');
     });
+
+    // Ajout d'événements aux boutons du popup "Pourquoi cet engagement ?"
+    document.querySelector('#info-popup .popup-buttons button:nth-child(1)').addEventListener('click', closeInfoPopup);
+    document.querySelector('#info-popup .popup-buttons button:nth-child(2)').addEventListener('click', togglePopupSize);
 
     // Ajout des événements pour les publications
     const posts = document.querySelectorAll('.post');
