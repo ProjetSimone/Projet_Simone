@@ -15,6 +15,10 @@
     --phone-bg: #121212;
 }
 
+img {
+    pointer-events: none;
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -80,14 +84,69 @@ body {
     width: 450px;
     opacity: 1;
     visibility: visible;
-    transition: all 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); /* Ajoute une animation fluide */
+    display: flex;
+    flex-direction: column; /* Organise les éléments verticalement */
+    justify-content: space-between; /* Boutons en bas */
 }
 
+.popup-content {
+    max-height: 200px; /* Définissez une hauteur fixe pour rendre le contenu défilable */
+    overflow-y: auto;  /* Activez le défilement vertical */
+    margin-bottom: 20px; /* Ajoutez un espacement pour éviter le chevauchement avec le bouton */
+    padding-right: 10px; /* Ajoutez de l'espace pour un défilement confortable */
+    flex-grow: 1; /* Permet au texte de s'étendre pour occuper l'espace disponible */
+    padding: 10px 15px;
+    transition: font-size 0.4s ease, line-height 0.4s ease, padding 0.4s ease; /* Animation du texte */
+}
+
+.popup-content::-webkit-scrollbar {
+    width: 8px; /* Largeur de la barre de défilement */
+}
+
+.popup-content::-webkit-scrollbar-thumb {
+    background-color: #ccc; /* Couleur de la barre de défilement */
+    border-radius: 4px; /* Arrondi de la barre de défilement */
+}
+
+.popup-content::-webkit-scrollbar-track {
+    background-color: #f1f1f1; /* Couleur de l'arrière-plan de la barre */
+}
 
 .popup.hidden {
     opacity: 0;
     visibility: hidden;
     transform: translate(-50%, -50%) scale(0.8);
+}
+
+.popup.extended {
+    max-width: 95%; /* Étendre la largeur du popup */
+    height: 90vh; /* Augmente la hauteur */
+    overflow-y: auto; /* Activer le défilement */
+}
+
+.popup.extended .popup-content {
+    max-height: none; /* Permet à la zone de texte de s'étendre pleinement */
+    height: auto; /* S'ajuste à la taille du popup */
+    font-size: 18px;
+    line-height: 1.8;
+    padding: 20px;
+}
+
+.popup-buttons {
+    display: flex;
+    justify-content: space-between;
+    gap: 10px;
+    padding: 15px; /* Ajoute un espace entre les boutons et le contenu */
+}
+
+.popup-buttons button {
+    flex: 1; /* Les boutons occupent un espace égal */
+    padding: 12px;
+    font-size: 14px;
+    font-weight: bold;
+    border-radius: 8px;
+    cursor: pointer;
 }
 
 @keyframes popupAppear {
